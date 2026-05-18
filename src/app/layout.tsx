@@ -25,11 +25,6 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     type: "website",
   },
-  twitter: {
-    card: "summary",
-    title: "Megumi Tarot",
-    description: "Descubra o que as cartas revelam — tiragem de tarô online",
-  },
 };
 
 export default function RootLayout({

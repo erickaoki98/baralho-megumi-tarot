@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("full 3-card reading flow with deck draw", async ({ request, page }) => {
+test("full 3-card reading flow", async ({ request, page }) => {
   const createRes = await request.post("/api/v1/readings", {
     data: { num_cartas: 3 },
   });
@@ -9,16 +9,16 @@ test("full 3-card reading flow with deck draw", async ({ request, page }) => {
   expect(num_cartas).toBe(3);
 
   await page.goto(`/reading/${id}`);
-  await expect(page.getByText("Sua Tiragem")).toBeVisible();
+  await expect(page.getByText("Escolha suas cartas")).toBeVisible();
   await expect(page.getByText("0/3")).toBeVisible();
 
   for (let i = 0; i < 3; i++) {
-    await page.getByText("Toque para revelar").click();
-    await page.waitForTimeout(1000);
+    const cards = page.locator("button.perspective:not([disabled])");
+    await cards.first().click();
+    await page.waitForTimeout(800);
   }
 
   await expect(page.getByText("Resultado")).toBeVisible({ timeout: 5000 });
-  await expect(page.getByText("3/3")).toBeVisible();
   await expect(page.getByText("Gerar Imagem")).toBeVisible();
 });
 

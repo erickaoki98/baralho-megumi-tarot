@@ -26,55 +26,46 @@ export default function Home() {
   }
 
   return (
-    <main className="relative h-dvh flex flex-col items-center justify-center overflow-hidden px-6">
-      {/* Ambient background */}
-      <div className="pointer-events-none absolute inset-0">
+    <main className="h-dvh flex flex-col items-center justify-center px-6 overflow-hidden relative">
+      {/* Decorative dots */}
+      {[0, 1, 2, 3, 4].map((i) => (
         <div
-          className="absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 h-[700px] w-[700px] rounded-full opacity-30"
+          key={i}
+          className="float-dot absolute rounded-full pointer-events-none"
           style={{
-            background:
-              "radial-gradient(circle, rgba(147,51,234,0.18) 0%, rgba(201,165,90,0.1) 40%, transparent 70%)",
+            width: 6 + i * 2,
+            height: 6 + i * 2,
+            background: i % 2 === 0 ? "var(--primary-light)" : "var(--accent-light)",
+            left: `${12 + i * 19}%`,
+            top: `${18 + ((i * 29) % 50)}%`,
+            animationDelay: `${i * 0.8}s`,
           }}
         />
-        {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-          <div
-            key={i}
-            className="float-particle absolute h-1.5 w-1.5 rounded-full"
-            style={{
-              background: "var(--gold)",
-              left: `${10 + i * 13}%`,
-              top: `${15 + ((i * 31) % 55)}%`,
-              animationDelay: `${i * 0.9}s`,
-              animationDuration: `${4 + i * 1.2}s`,
-            }}
-          />
-        ))}
-      </div>
+      ))}
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center gap-12 max-w-lg w-full">
-        {/* Title */}
+      <div className="relative z-10 flex flex-col items-center gap-10 max-w-sm w-full">
+        {/* Logo / Title */}
         <div className="text-center">
-          <h1 className="font-serif text-6xl sm:text-7xl lg:text-8xl font-bold text-gold-gradient leading-none tracking-tight">
+          <p
+            className="text-sm tracking-[0.2em] uppercase mb-2"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            ✦ Tiragem Online ✦
+          </p>
+          <h1 className="font-serif text-5xl sm:text-6xl font-bold text-title-gradient leading-tight">
             Megumi Tarot
           </h1>
-          <p
-            className="mt-4 text-base tracking-[0.25em] uppercase"
-            style={{ color: "var(--text-secondary)" }}
-          >
-            Descubra o que as cartas revelam
-          </p>
         </div>
 
-        {/* Card count selector */}
-        <div className="flex flex-col items-center gap-5 w-full">
+        {/* Card count */}
+        <div className="flex flex-col items-center gap-4 w-full">
           <p
-            className="text-base font-medium"
+            className="text-sm font-medium"
             style={{ color: "var(--text-secondary)" }}
           >
-            Quantas cartas deseja revelar?
+            Quantas cartas?
           </p>
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex flex-wrap justify-center gap-2.5">
             {Array.from(
               { length: MAX_CARTAS - MIN_CARTAS + 1 },
               (_, i) => i + MIN_CARTAS,
@@ -84,16 +75,14 @@ export default function Home() {
                 <button
                   key={n}
                   onClick={() => setNumCartas(n)}
-                  className="press-scale relative h-12 w-12 rounded-full cursor-pointer font-medium text-base transition-all duration-200 focus:outline-none"
+                  className="press-scale h-11 w-11 rounded-full cursor-pointer font-medium text-sm transition-all duration-200"
                   style={{
-                    background: selected ? "var(--gold)" : "var(--bg-surface)",
-                    color: selected ? "var(--bg-deep)" : "var(--text-secondary)",
-                    border: selected
-                      ? "2px solid var(--gold)"
-                      : "1px solid rgba(201,165,90,0.2)",
+                    background: selected ? "var(--primary)" : "white",
+                    color: selected ? "white" : "var(--text-secondary)",
+                    border: selected ? "none" : "1.5px solid var(--card-border)",
                     boxShadow: selected
-                      ? "0 0 24px rgba(201,165,90,0.35)"
-                      : "none",
+                      ? "0 2px 12px rgba(192,123,160,0.3)"
+                      : "0 1px 3px rgba(0,0,0,0.04)",
                   }}
                 >
                   {n}
@@ -103,17 +92,16 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Embaralhar button */}
+        {/* Shuffle button */}
         <button
           onClick={handleShuffle}
           disabled={loading}
-          className="btn-shimmer glow-pulse press-scale relative px-16 py-5 rounded-full cursor-pointer font-serif text-2xl font-semibold tracking-wide transition-all duration-200 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none"
-          style={{ color: "var(--bg-deep)" }}
+          className="btn-primary press-scale px-14 py-4 rounded-full cursor-pointer font-serif text-xl font-semibold tracking-wide transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? (
-            <span className="flex items-center gap-3">
+            <span className="flex items-center gap-2">
               <svg
-                className="animate-spin h-6 w-6"
+                className="animate-spin h-5 w-5"
                 viewBox="0 0 24 24"
                 fill="none"
               >
@@ -134,7 +122,7 @@ export default function Home() {
               Embaralhando…
             </span>
           ) : (
-            "Embaralhar"
+            "Embaralhar ✦"
           )}
         </button>
       </div>
