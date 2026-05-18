@@ -26,40 +26,40 @@ export default function Home() {
   }
 
   return (
-    <main className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-6">
+    <main className="relative h-dvh flex flex-col items-center justify-center overflow-hidden px-6">
       {/* Ambient background */}
       <div className="pointer-events-none absolute inset-0">
         <div
-          className="absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full opacity-30"
+          className="absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 h-[700px] w-[700px] rounded-full opacity-30"
           style={{
             background:
-              "radial-gradient(circle, rgba(147,51,234,0.15) 0%, rgba(201,165,90,0.08) 40%, transparent 70%)",
+              "radial-gradient(circle, rgba(147,51,234,0.18) 0%, rgba(201,165,90,0.1) 40%, transparent 70%)",
           }}
         />
-        {[0, 1, 2, 3, 4].map((i) => (
+        {[0, 1, 2, 3, 4, 5, 6].map((i) => (
           <div
             key={i}
-            className="float-particle absolute h-1 w-1 rounded-full"
+            className="float-particle absolute h-1.5 w-1.5 rounded-full"
             style={{
               background: "var(--gold)",
-              left: `${15 + i * 18}%`,
-              top: `${20 + ((i * 37) % 50)}%`,
-              animationDelay: `${i * 1.2}s`,
-              animationDuration: `${5 + i * 1.5}s`,
+              left: `${10 + i * 13}%`,
+              top: `${15 + ((i * 31) % 55)}%`,
+              animationDelay: `${i * 0.9}s`,
+              animationDuration: `${4 + i * 1.2}s`,
             }}
           />
         ))}
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center gap-10 max-w-md w-full">
+      <div className="relative z-10 flex flex-col items-center gap-12 max-w-lg w-full">
         {/* Title */}
         <div className="text-center">
-          <h1 className="font-serif text-5xl sm:text-6xl font-bold text-gold-gradient leading-tight tracking-tight">
+          <h1 className="font-serif text-6xl sm:text-7xl lg:text-8xl font-bold text-gold-gradient leading-none tracking-tight">
             Megumi Tarot
           </h1>
           <p
-            className="mt-3 text-sm tracking-widest uppercase"
+            className="mt-4 text-base tracking-[0.25em] uppercase"
             style={{ color: "var(--text-secondary)" }}
           >
             Descubra o que as cartas revelam
@@ -67,14 +67,14 @@ export default function Home() {
         </div>
 
         {/* Card count selector */}
-        <div className="flex flex-col items-center gap-4 w-full">
+        <div className="flex flex-col items-center gap-5 w-full">
           <p
-            className="text-sm font-medium"
+            className="text-base font-medium"
             style={{ color: "var(--text-secondary)" }}
           >
             Quantas cartas deseja revelar?
           </p>
-          <div className="flex flex-wrap justify-center gap-2">
+          <div className="flex flex-wrap justify-center gap-3">
             {Array.from(
               { length: MAX_CARTAS - MIN_CARTAS + 1 },
               (_, i) => i + MIN_CARTAS,
@@ -84,7 +84,7 @@ export default function Home() {
                 <button
                   key={n}
                   onClick={() => setNumCartas(n)}
-                  className="press-scale relative h-11 w-11 rounded-full cursor-pointer font-medium text-sm transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                  className="press-scale relative h-12 w-12 rounded-full cursor-pointer font-medium text-base transition-all duration-200 focus:outline-none"
                   style={{
                     background: selected ? "var(--gold)" : "var(--bg-surface)",
                     color: selected ? "var(--bg-deep)" : "var(--text-secondary)",
@@ -92,7 +92,7 @@ export default function Home() {
                       ? "2px solid var(--gold)"
                       : "1px solid rgba(201,165,90,0.2)",
                     boxShadow: selected
-                      ? "0 0 20px rgba(201,165,90,0.3)"
+                      ? "0 0 24px rgba(201,165,90,0.35)"
                       : "none",
                   }}
                 >
@@ -107,13 +107,13 @@ export default function Home() {
         <button
           onClick={handleShuffle}
           disabled={loading}
-          className="btn-shimmer glow-pulse press-scale relative px-14 py-4 rounded-full cursor-pointer font-serif text-xl font-semibold tracking-wide transition-all duration-200 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+          className="btn-shimmer glow-pulse press-scale relative px-16 py-5 rounded-full cursor-pointer font-serif text-2xl font-semibold tracking-wide transition-all duration-200 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none"
           style={{ color: "var(--bg-deep)" }}
         >
           {loading ? (
-            <span className="flex items-center gap-2">
+            <span className="flex items-center gap-3">
               <svg
-                className="animate-spin h-5 w-5"
+                className="animate-spin h-6 w-6"
                 viewBox="0 0 24 24"
                 fill="none"
               >
@@ -137,14 +137,6 @@ export default function Home() {
             "Embaralhar"
           )}
         </button>
-
-        <p
-          className="text-xs text-center max-w-xs"
-          style={{ color: "var(--text-secondary)" }}
-        >
-          O baralho será embaralhado no servidor. Cada carta que você revelar
-          consulta essa ordem — nenhuma informação antecipada chega ao navegador.
-        </p>
       </div>
     </main>
   );
