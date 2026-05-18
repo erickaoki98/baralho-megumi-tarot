@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test("full 3-card reading flow", async ({ request, page }) => {
   const createRes = await request.post("/api/v1/readings", {
-    data: { tipo: "3_cartas" },
+    data: { num_cartas: 3 },
   });
   expect(createRes.ok()).toBeTruthy();
   const { id, num_cartas } = await createRes.json();
@@ -12,30 +12,28 @@ test("full 3-card reading flow", async ({ request, page }) => {
   await expect(page.locator("h1")).toContainText("Sua Tiragem");
 
   for (let i = 0; i < 3; i++) {
-    const unrevealed = page.locator("button.bg-gray-300");
+    const unrevealed = page.locator("button.perspective:not([disabled])");
     await expect(unrevealed.first()).toBeVisible();
     await unrevealed.first().click();
-    await page.waitForSelector("button.bg-white.border-purple-500", {
-      state: "attached",
-    });
+    await page.waitForTimeout(800);
   }
 
-  await expect(page.getByText("3/3")).toBeVisible();
+  await expect(page.getByText("3 de 3")).toBeVisible();
 
-  const finalizeBtn = page.getByRole("button", { name: "Finalizar" });
+  const finalizeBtn = page.getByRole("button", { name: "Ver Resultado" });
   await expect(finalizeBtn).toBeVisible();
   await finalizeBtn.click();
 
   await page.waitForURL(`**/reading/${id}/result`);
   await expect(page.locator("h1")).toContainText("Resultado");
 
-  const resultCards = page.locator(".space-y-4 > div");
+  const resultCards = page.locator(".flex.flex-col.gap-4 > div.animate-fade-up");
   await expect(resultCards).toHaveCount(3);
 });
 
 test("API never exposes deck_order or reverseds", async ({ request }) => {
   const createRes = await request.post("/api/v1/readings", {
-    data: { tipo: "1_carta" },
+    data: { num_cartas: 1 },
   });
   const reading = await createRes.json();
   expect(reading).not.toHaveProperty("deck_order");

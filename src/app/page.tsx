@@ -1,47 +1,150 @@
-import { redirect } from "next/navigation";
-import { createReading } from "@/lib/readings/service";
-import type { ReadingType } from "@/lib/types";
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { MIN_CARTAS, MAX_CARTAS } from "@/lib/types";
 
 export default function Home() {
-  async function novaLeitura(formData: FormData) {
-    "use server";
-    const tipo = formData.get("tipo") as ReadingType;
-    const reading = await createReading(tipo);
-    redirect(`/reading/${reading.id}`);
+  const [numCartas, setNumCartas] = useState(3);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  async function handleShuffle() {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/v1/readings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ num_cartas: numCartas }),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      router.push(`/reading/${data.id}`);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-8 p-8">
-      <h1 className="text-3xl font-bold">Baralho — Megumi Tarot</h1>
-      <p className="text-gray-600">Escolha o tipo de tiragem:</p>
-      <div className="flex gap-4">
-        <form action={novaLeitura}>
-          <input type="hidden" name="tipo" value="1_carta" />
-          <button
-            type="submit"
-            className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+    <main className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-6">
+      {/* Ambient background */}
+      <div className="pointer-events-none absolute inset-0">
+        <div
+          className="absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full opacity-30"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(147,51,234,0.15) 0%, rgba(201,165,90,0.08) 40%, transparent 70%)",
+          }}
+        />
+        {[0, 1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="float-particle absolute h-1 w-1 rounded-full"
+            style={{
+              background: "var(--gold)",
+              left: `${15 + i * 18}%`,
+              top: `${20 + ((i * 37) % 50)}%`,
+              animationDelay: `${i * 1.2}s`,
+              animationDuration: `${5 + i * 1.5}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center gap-10 max-w-md w-full">
+        {/* Title */}
+        <div className="text-center">
+          <h1 className="font-serif text-5xl sm:text-6xl font-bold text-gold-gradient leading-tight tracking-tight">
+            Megumi Tarot
+          </h1>
+          <p
+            className="mt-3 text-sm tracking-widest uppercase"
+            style={{ color: "var(--text-secondary)" }}
           >
-            1 Carta
-          </button>
-        </form>
-        <form action={novaLeitura}>
-          <input type="hidden" name="tipo" value="3_cartas" />
-          <button
-            type="submit"
-            className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+            Descubra o que as cartas revelam
+          </p>
+        </div>
+
+        {/* Card count selector */}
+        <div className="flex flex-col items-center gap-4 w-full">
+          <p
+            className="text-sm font-medium"
+            style={{ color: "var(--text-secondary)" }}
           >
-            3 Cartas
-          </button>
-        </form>
-        <form action={novaLeitura}>
-          <input type="hidden" name="tipo" value="celta" />
-          <button
-            type="submit"
-            className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
-          >
-            Cruz Celta (10)
-          </button>
-        </form>
+            Quantas cartas deseja revelar?
+          </p>
+          <div className="flex flex-wrap justify-center gap-2">
+            {Array.from(
+              { length: MAX_CARTAS - MIN_CARTAS + 1 },
+              (_, i) => i + MIN_CARTAS,
+            ).map((n) => {
+              const selected = n === numCartas;
+              return (
+                <button
+                  key={n}
+                  onClick={() => setNumCartas(n)}
+                  className="press-scale relative h-11 w-11 rounded-full cursor-pointer font-medium text-sm transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                  style={{
+                    background: selected ? "var(--gold)" : "var(--bg-surface)",
+                    color: selected ? "var(--bg-deep)" : "var(--text-secondary)",
+                    border: selected
+                      ? "2px solid var(--gold)"
+                      : "1px solid rgba(201,165,90,0.2)",
+                    boxShadow: selected
+                      ? "0 0 20px rgba(201,165,90,0.3)"
+                      : "none",
+                  }}
+                >
+                  {n}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Embaralhar button */}
+        <button
+          onClick={handleShuffle}
+          disabled={loading}
+          className="btn-shimmer glow-pulse press-scale relative px-14 py-4 rounded-full cursor-pointer font-serif text-xl font-semibold tracking-wide transition-all duration-200 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+          style={{ color: "var(--bg-deep)" }}
+        >
+          {loading ? (
+            <span className="flex items-center gap-2">
+              <svg
+                className="animate-spin h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+              Embaralhando…
+            </span>
+          ) : (
+            "Embaralhar"
+          )}
+        </button>
+
+        <p
+          className="text-xs text-center max-w-xs"
+          style={{ color: "var(--text-secondary)" }}
+        >
+          O baralho será embaralhado no servidor. Cada carta que você revelar
+          consulta essa ordem — nenhuma informação antecipada chega ao navegador.
+        </p>
       </div>
     </main>
   );

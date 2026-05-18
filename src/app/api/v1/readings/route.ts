@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createReading } from "@/lib/readings/service";
+import { MIN_CARTAS, MAX_CARTAS } from "@/lib/types";
 
 const CreateReadingSchema = z.object({
-  tipo: z.enum(["1_carta", "3_cartas", "celta"]),
+  num_cartas: z.number().int().min(MIN_CARTAS).max(MAX_CARTAS),
 });
 
 export async function POST(request: NextRequest) {
@@ -15,7 +16,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const reading = await createReading(parsed.data.tipo);
+    const reading = await createReading(parsed.data.num_cartas);
     return NextResponse.json(reading, { status: 201 });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Internal error";

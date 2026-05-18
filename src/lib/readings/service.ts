@@ -2,10 +2,9 @@ import { getServiceClient } from "@/lib/supabase";
 import { shuffleDeck, revealCard } from "@/lib/deck";
 import { canReveal, canFinalize } from "./validation";
 import { CARDS } from "@/data/cards";
-import { READING_CONFIG } from "@/lib/types";
+import { MIN_CARTAS, MAX_CARTAS } from "@/lib/types";
 import type {
   Reading,
-  ReadingType,
   ReadingPublic,
   RevealedCard,
 } from "@/lib/types";
@@ -22,16 +21,22 @@ function buildRevealedCards(reading: Reading): RevealedCard[] {
   });
 }
 
-export async function createReading(tipo: ReadingType): Promise<ReadingPublic> {
-  const config = READING_CONFIG[tipo];
+export async function createReading(numCartas: number): Promise<ReadingPublic> {
+  if (
+    !Number.isInteger(numCartas) ||
+    numCartas < MIN_CARTAS ||
+    numCartas > MAX_CARTAS
+  ) {
+    throw new Error(`num_cartas must be ${MIN_CARTAS}-${MAX_CARTAS}`);
+  }
   const { order, reverseds } = shuffleDeck();
   const supabase = getServiceClient();
 
   const { data, error } = await supabase
     .from("readings")
     .insert({
-      tipo,
-      num_cartas: config.numCartas,
+      tipo: "livre",
+      num_cartas: numCartas,
       deck_order: order,
       reverseds,
     })
