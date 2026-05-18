@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getReadingPublic } from "@/lib/readings/service";
+import Link from "next/link";
 import Board from "./board";
 
 export default async function ReadingPage({
@@ -26,6 +27,14 @@ export default async function ReadingPage({
       </div>
 
       <div className="relative z-10 flex flex-col items-center gap-6 w-full max-w-5xl">
+        <Link
+          href="/"
+          className="self-start text-sm transition-opacity hover:opacity-100 opacity-60"
+          style={{ color: "var(--gold)" }}
+        >
+          &larr; Nova tiragem
+        </Link>
+
         <div className="text-center">
           <h1 className="font-serif text-3xl sm:text-4xl font-bold text-gold-gradient leading-tight tracking-tight">
             Sua Tiragem

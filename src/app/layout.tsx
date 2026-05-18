@@ -17,6 +17,19 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Megumi Tarot",
   description: "Tiragem de tarô online — Megumi Tarot",
+  metadataBase: new URL("https://baralho.megumitarot.com.br"),
+  openGraph: {
+    title: "Megumi Tarot",
+    description: "Descubra o que as cartas revelam — tiragem de tarô online",
+    siteName: "Megumi Tarot",
+    locale: "pt_BR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Megumi Tarot",
+    description: "Descubra o que as cartas revelam — tiragem de tarô online",
+  },
 };
 
 export default function RootLayout({
