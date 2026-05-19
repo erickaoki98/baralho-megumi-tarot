@@ -1,22 +1,23 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const ALLOWED_ORIGIN = "https://app.megumitarot.com.br";
+const ALLOWED_ORIGINS = [
+  "https://app.megumitarot.com.br",
+  "https://preview--creative-sales-aid.lovable.app",
+];
 
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
+  const origin = request.headers.get("origin") ?? "";
 
   response.headers.set(
     "Content-Security-Policy",
-    `frame-ancestors 'self' ${ALLOWED_ORIGIN}`,
+    `frame-ancestors 'self' ${ALLOWED_ORIGINS.join(" ")}`,
   );
-  response.headers.set("X-Frame-Options", `ALLOW-FROM ${ALLOWED_ORIGIN}`);
 
   if (request.nextUrl.pathname.startsWith("/api/")) {
-    response.headers.set(
-      "Access-Control-Allow-Origin",
-      ALLOWED_ORIGIN,
-    );
+    const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+    response.headers.set("Access-Control-Allow-Origin", allowedOrigin);
     response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     response.headers.set("Access-Control-Allow-Headers", "Content-Type");
   }

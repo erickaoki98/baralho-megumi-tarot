@@ -23,17 +23,23 @@ export default function Board({
   const [exporting, setExporting] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null);
 
-  const PARENT_ORIGIN = "https://app.megumitarot.com.br";
+  const ALLOWED_ORIGINS = [
+    "https://app.megumitarot.com.br",
+    "https://preview--creative-sales-aid.lovable.app",
+  ];
+
+  function postToParent(text: string) {
+    for (const origin of ALLOWED_ORIGINS) {
+      window.parent.postMessage({ type: "megumi-tarot-result", text }, origin);
+    }
+  }
 
   useEffect(() => {
     if (phase !== "result") return;
     const text = reading.revealed
       .map((r, i) => `${i + 1}. ${r.card.nome_pt}`)
       .join("\n");
-    window.parent.postMessage(
-      { type: "megumi-tarot-result", text },
-      PARENT_ORIGIN,
-    );
+    postToParent(text);
   }, [phase, reading.revealed]);
 
   const revealedMap = new Map(reading.revealed.map((r) => [r.position, r]));
@@ -163,10 +169,7 @@ export default function Board({
                 const text = reading.revealed
                   .map((r, i) => `${i + 1}. ${r.card.nome_pt}`)
                   .join("\n");
-                window.parent.postMessage(
-                  { type: "megumi-tarot-result", text },
-                  PARENT_ORIGIN,
-                );
+                postToParent(text);
               }}
               className="btn-primary press-scale px-8 py-2.5 rounded-full cursor-pointer font-medium text-sm tracking-wide transition-all hover:scale-105"
             >
