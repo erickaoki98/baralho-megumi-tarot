@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { MIN_CARTAS, MAX_CARTAS } from "@/lib/types";
+
+const NUM_CARTAS = 6;
 
 export default function Home() {
-  const [numCartas, setNumCartas] = useState(3);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -15,7 +15,7 @@ export default function Home() {
       const res = await fetch("/api/v1/readings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ num_cartas: numCartas }),
+        body: JSON.stringify({ num_cartas: NUM_CARTAS }),
       });
       if (!res.ok) return;
       const data = await res.json();
@@ -43,7 +43,7 @@ export default function Home() {
         />
       ))}
 
-      <div className="relative z-10 flex flex-col items-center gap-10 max-w-sm w-full">
+      <div className="relative z-10 flex flex-col items-center gap-12 max-w-sm w-full">
         {/* Logo / Title */}
         <div className="text-center">
           <p
@@ -55,41 +55,12 @@ export default function Home() {
           <h1 className="font-serif text-5xl sm:text-6xl font-bold text-title-gradient leading-tight">
             Megumi Tarot
           </h1>
-        </div>
-
-        {/* Card count */}
-        <div className="flex flex-col items-center gap-4 w-full">
           <p
-            className="text-sm font-medium"
+            className="mt-3 text-sm"
             style={{ color: "var(--text-secondary)" }}
           >
-            Quantas cartas?
+            {NUM_CARTAS} cartas serão reveladas
           </p>
-          <div className="flex flex-wrap justify-center gap-2.5">
-            {Array.from(
-              { length: MAX_CARTAS - MIN_CARTAS + 1 },
-              (_, i) => i + MIN_CARTAS,
-            ).map((n) => {
-              const selected = n === numCartas;
-              return (
-                <button
-                  key={n}
-                  onClick={() => setNumCartas(n)}
-                  className="press-scale h-11 w-11 rounded-full cursor-pointer font-medium text-sm transition-all duration-200"
-                  style={{
-                    background: selected ? "var(--primary)" : "white",
-                    color: selected ? "white" : "var(--text-secondary)",
-                    border: selected ? "none" : "1.5px solid var(--card-border)",
-                    boxShadow: selected
-                      ? "0 2px 12px rgba(192,123,160,0.3)"
-                      : "0 1px 3px rgba(0,0,0,0.04)",
-                  }}
-                >
-                  {n}
-                </button>
-              );
-            })}
-          </div>
         </div>
 
         {/* Shuffle button */}

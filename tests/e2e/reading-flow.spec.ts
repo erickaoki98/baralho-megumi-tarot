@@ -1,18 +1,18 @@
 import { test, expect } from "@playwright/test";
 
-test("full 3-card reading flow", async ({ request, page }) => {
+test("full 6-card reading flow", async ({ request, page }) => {
   const createRes = await request.post("/api/v1/readings", {
-    data: { num_cartas: 3 },
+    data: { num_cartas: 6 },
   });
   expect(createRes.ok()).toBeTruthy();
   const { id, num_cartas } = await createRes.json();
-  expect(num_cartas).toBe(3);
+  expect(num_cartas).toBe(6);
 
   await page.goto(`/reading/${id}`);
   await expect(page.getByText("Escolha suas cartas")).toBeVisible();
-  await expect(page.getByText("0/3")).toBeVisible();
+  await expect(page.getByText("0/6")).toBeVisible();
 
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 6; i++) {
     const cards = page.locator("button.perspective:not([disabled])");
     await cards.first().click();
     await page.waitForTimeout(800);
