@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { toPng } from "html-to-image";
 import type { ReadingPublic, RevealedCard } from "@/lib/types";
@@ -22,6 +22,19 @@ export default function Board({
   );
   const [exporting, setExporting] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null);
+
+  const PARENT_ORIGIN = "https://app.megumitarot.com.br";
+
+  useEffect(() => {
+    if (phase !== "result") return;
+    const text = reading.revealed
+      .map((r, i) => `${i + 1}. ${r.card.nome_pt}`)
+      .join("\n");
+    window.parent.postMessage(
+      { type: "megumi-tarot-result", text },
+      PARENT_ORIGIN,
+    );
+  }, [phase, reading.revealed]);
 
   const revealedMap = new Map(reading.revealed.map((r) => [r.position, r]));
   const allRevealed = reading.revealed.length >= reading.num_cartas;
@@ -144,11 +157,30 @@ export default function Board({
             </p>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex flex-wrap justify-center gap-3">
+            <button
+              onClick={() => {
+                const text = reading.revealed
+                  .map((r, i) => `${i + 1}. ${r.card.nome_pt}`)
+                  .join("\n");
+                window.parent.postMessage(
+                  { type: "megumi-tarot-result", text },
+                  PARENT_ORIGIN,
+                );
+              }}
+              className="btn-primary press-scale px-8 py-2.5 rounded-full cursor-pointer font-medium text-sm tracking-wide transition-all hover:scale-105"
+            >
+              Enviar Resultado
+            </button>
             <button
               onClick={handleExportImage}
               disabled={exporting}
-              className="btn-primary press-scale px-8 py-2.5 rounded-full cursor-pointer font-medium text-sm tracking-wide transition-all hover:scale-105 disabled:opacity-50"
+              className="press-scale px-6 py-2.5 rounded-full cursor-pointer font-medium text-sm tracking-wide transition-all hover:scale-105 disabled:opacity-50"
+              style={{
+                color: "var(--primary)",
+                border: "1.5px solid var(--card-border)",
+                background: "white",
+              }}
             >
               {exporting ? "Gerando…" : "Gerar Imagem"}
             </button>
@@ -161,7 +193,7 @@ export default function Board({
                 background: "white",
               }}
             >
-              Voltar
+              Nova Tiragem
             </Link>
           </div>
         </div>
