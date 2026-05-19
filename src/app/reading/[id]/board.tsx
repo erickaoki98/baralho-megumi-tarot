@@ -199,8 +199,19 @@ export default function Board({
         className="flex-none flex items-center justify-between px-3 py-2 border-b"
         style={{ borderColor: "var(--card-border)" }}
       >
-        <a href="/" className="text-xs font-medium" style={{ color: "var(--primary)" }}>
-          ✦ Voltar
+        <a
+          href="/"
+          className="press-scale flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full transition-all hover:brightness-110"
+          style={{
+            color: "var(--primary)",
+            background: "var(--primary-dim)",
+            border: "1px solid var(--card-border)",
+          }}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-3.5 h-3.5">
+            <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Embaralhar
         </a>
         <span className="font-serif text-base font-bold" style={{ color: "var(--text)" }}>
           Escolha suas cartas
