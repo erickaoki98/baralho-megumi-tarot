@@ -11,13 +11,9 @@ import type {
 
 function buildRevealedCards(reading: Reading): RevealedCard[] {
   return reading.selected_positions.map((pos) => {
-    const { cardId, reversed } = revealCard(
-      reading.deck_order,
-      reading.reverseds,
-      pos,
-    );
+    const { cardId } = revealCard(reading.deck_order, pos);
     const card = CARDS.find((c) => c.id === cardId)!;
-    return { position: pos, card, reversed };
+    return { position: pos, card };
   });
 }
 
@@ -29,7 +25,7 @@ export async function createReading(numCartas: number): Promise<ReadingPublic> {
   ) {
     throw new Error(`num_cartas must be ${MIN_CARTAS}-${MAX_CARTAS}`);
   }
-  const { order, reverseds } = shuffleDeck();
+  const { order } = shuffleDeck();
   const supabase = getServiceClient();
 
   const { data, error } = await supabase
@@ -38,7 +34,6 @@ export async function createReading(numCartas: number): Promise<ReadingPublic> {
       tipo: "livre",
       num_cartas: numCartas,
       deck_order: order,
-      reverseds,
     })
     .select("id, tipo, num_cartas, status")
     .single();
@@ -114,13 +109,9 @@ export async function revealPosition(
       throw new Error(`Failed to reveal: ${updateError.message}`);
   }
 
-  const { cardId, reversed } = revealCard(
-    reading.deck_order,
-    reading.reverseds,
-    position,
-  );
+  const { cardId } = revealCard(reading.deck_order, position);
   const card = CARDS.find((c) => c.id === cardId)!;
-  return { position, card, reversed };
+  return { position, card };
 }
 
 export async function finalizeReading(id: string): Promise<RevealedCard[]> {

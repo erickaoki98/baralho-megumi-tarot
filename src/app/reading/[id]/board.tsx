@@ -134,11 +134,7 @@ export default function Board({
                   >
                     {r.card.nome}
                   </span>
-                  {r.reversed && (
-                    <span className="text-[10px] font-medium" style={{ color: "var(--danger)" }}>
-                      Invertida
-                    </span>
-                  )}
+
                 </div>
               ))}
             </div>
@@ -176,15 +172,15 @@ export default function Board({
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex-none flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: "var(--card-border)" }}>
-        <Link href="/" className="text-sm font-medium" style={{ color: "var(--primary)" }}>
+      <div className="flex-none flex items-center justify-between px-3 py-2 border-b" style={{ borderColor: "var(--card-border)" }}>
+        <Link href="/" className="text-xs font-medium" style={{ color: "var(--primary)" }}>
           ✦ Voltar
         </Link>
-        <span className="font-serif text-lg font-bold" style={{ color: "var(--text)" }}>
+        <span className="font-serif text-base font-bold" style={{ color: "var(--text)" }}>
           Escolha suas cartas
         </span>
         <span
-          className="text-sm font-semibold px-2.5 py-0.5 rounded-full"
+          className="text-xs font-semibold px-2 py-0.5 rounded-full"
           style={{
             background: allRevealed ? "var(--primary)" : "var(--primary-dim)",
             color: allRevealed ? "white" : "var(--primary)",
@@ -195,11 +191,11 @@ export default function Board({
       </div>
 
       {/* Progress */}
-      <div className="flex-none flex gap-1.5 px-4 py-2">
+      <div className="flex-none flex gap-1 px-3 py-1">
         {Array.from({ length: reading.num_cartas }, (_, i) => (
           <div
             key={i}
-            className="h-1 flex-1 rounded-full transition-all duration-400"
+            className="h-0.5 flex-1 rounded-full transition-all duration-400"
             style={{
               background: i < reading.revealed.length ? "var(--primary)" : "var(--primary-dim)",
             }}
@@ -207,9 +203,9 @@ export default function Board({
         ))}
       </div>
 
-      {/* Card grid — scrollable area */}
-      <div className="flex-1 overflow-y-auto grid-scroll px-3 py-2 min-h-0">
-        <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-13 gap-1.5">
+      {/* Card grid — fills remaining space, no scroll */}
+      <div className="flex-1 min-h-0 px-1.5 py-1">
+        <div className="h-full grid grid-cols-6 grid-rows-[repeat(13,1fr)] sm:grid-cols-8 sm:grid-rows-[repeat(10,1fr)] md:grid-cols-10 md:grid-rows-[repeat(8,1fr)] lg:grid-cols-13 lg:grid-rows-[repeat(6,1fr)] gap-[3px]">
           {Array.from({ length: 78 }, (_, i) => {
             const revealed = revealedMap.get(i);
             const isFlipped = flipped.has(i);
@@ -221,7 +217,7 @@ export default function Board({
                 key={i}
                 onClick={() => handleReveal(i)}
                 disabled={isDisabled}
-                className="perspective aspect-[5/7] cursor-pointer disabled:cursor-default"
+                className="perspective w-full h-full cursor-pointer disabled:cursor-default"
               >
                 <div className={`card-inner relative w-full h-full ${isFlipped ? "flipped" : ""}`}>
                   {/* Back */}
@@ -269,11 +265,7 @@ export default function Board({
                         >
                           {revealed.card.nome_pt}
                         </span>
-                        {revealed.reversed && (
-                          <span className="text-[7px] font-medium" style={{ color: "var(--danger)" }}>
-                            Inv.
-                          </span>
-                        )}
+
                       </>
                     )}
                   </div>

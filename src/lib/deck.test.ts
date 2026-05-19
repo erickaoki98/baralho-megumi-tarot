@@ -13,9 +13,8 @@ function mulberry32(seed: number): () => number {
 
 describe("shuffleDeck", () => {
   it("produces a permutation of 0-77 with no duplicates", () => {
-    const { order, reverseds } = shuffleDeck();
+    const { order } = shuffleDeck();
     expect(order).toHaveLength(78);
-    expect(reverseds).toHaveLength(78);
     const sorted = [...order].sort((a, b) => a - b);
     expect(sorted).toEqual(Array.from({ length: 78 }, (_, i) => i));
   });
@@ -24,38 +23,26 @@ describe("shuffleDeck", () => {
     const a = shuffleDeck(mulberry32(42));
     const b = shuffleDeck(mulberry32(42));
     expect(a.order).toEqual(b.order);
-    expect(a.reverseds).toEqual(b.reverseds);
-  });
-
-  it("respects custom reversal probability of 0 (never reversed)", () => {
-    const { reverseds } = shuffleDeck(mulberry32(123), 0);
-    expect(reverseds.every((r) => r === false)).toBe(true);
-  });
-
-  it("respects custom reversal probability of 1 (always reversed)", () => {
-    const { reverseds } = shuffleDeck(mulberry32(456), 1);
-    expect(reverseds.every((r) => r === true)).toBe(true);
   });
 });
 
 describe("revealCard", () => {
   const order = Array.from({ length: 78 }, (_, i) => i);
-  const reverseds = Array.from({ length: 78 }, (_, i) => i % 2 === 0);
 
-  it("returns correct card and reversed status for valid position", () => {
-    expect(revealCard(order, reverseds, 5)).toEqual({ cardId: 5, reversed: false });
-    expect(revealCard(order, reverseds, 0)).toEqual({ cardId: 0, reversed: true });
+  it("returns correct cardId for valid position", () => {
+    expect(revealCard(order, 5)).toEqual({ cardId: 5 });
+    expect(revealCard(order, 0)).toEqual({ cardId: 0 });
   });
 
   it("throws for position < 0", () => {
-    expect(() => revealCard(order, reverseds, -1)).toThrow();
+    expect(() => revealCard(order, -1)).toThrow();
   });
 
   it("throws for position > 77", () => {
-    expect(() => revealCard(order, reverseds, 78)).toThrow();
+    expect(() => revealCard(order, 78)).toThrow();
   });
 
   it("throws for non-integer position", () => {
-    expect(() => revealCard(order, reverseds, 1.5)).toThrow();
+    expect(() => revealCard(order, 1.5)).toThrow();
   });
 });

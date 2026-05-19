@@ -51,11 +51,7 @@ export default async function ResultPage({
               <span className="text-[10px] text-center" style={{ color: "var(--text-secondary)" }}>
                 {r.card.nome}
               </span>
-              {r.reversed && (
-                <span className="text-[10px] font-medium" style={{ color: "var(--danger)" }}>
-                  Invertida
-                </span>
-              )}
+
             </div>
           ))}
         </div>

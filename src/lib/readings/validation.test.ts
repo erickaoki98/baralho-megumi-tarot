@@ -7,7 +7,7 @@ const baseReading: Reading = {
   tipo: "3_cartas",
   num_cartas: 3,
   deck_order: Array.from({ length: 78 }, (_, i) => i),
-  reverseds: Array.from({ length: 78 }, () => false),
+
   selected_positions: [],
   status: "aguardando",
   created_at: new Date().toISOString(),

@@ -7,8 +7,7 @@ function cryptoRng(): number {
 
 export function shuffleDeck(
   rng: () => number = cryptoRng,
-  reversalProbability = 0.3,
-): { order: number[]; reverseds: boolean[] } {
+): { order: number[] } {
   const order = Array.from({ length: 78 }, (_, i) => i);
 
   for (let i = order.length - 1; i > 0; i--) {
@@ -16,24 +15,15 @@ export function shuffleDeck(
     [order[i], order[j]] = [order[j], order[i]];
   }
 
-  const reverseds = Array.from(
-    { length: 78 },
-    () => rng() < reversalProbability,
-  );
-
-  return { order, reverseds };
+  return { order };
 }
 
 export function revealCard(
   deckOrder: number[],
-  reverseds: boolean[],
   position: number,
-): { cardId: number; reversed: boolean } {
+): { cardId: number } {
   if (!Number.isInteger(position) || position < 0 || position > 77) {
     throw new Error(`Invalid position: ${position}. Must be integer 0-77.`);
   }
-  return {
-    cardId: deckOrder[position],
-    reversed: reverseds[position],
-  };
+  return { cardId: deckOrder[position] };
 }

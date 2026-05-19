@@ -28,7 +28,6 @@ export interface Reading {
   tipo: ReadingType;
   num_cartas: number;
   deck_order: number[];
-  reverseds: boolean[];
   selected_positions: number[];
   status: ReadingStatus;
   created_at: string;
@@ -47,5 +46,4 @@ export interface ReadingPublic {
 export interface RevealedCard {
   position: number;
   card: Card;
-  reversed: boolean;
 }
