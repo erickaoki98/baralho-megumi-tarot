@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import type { ReadingPublic, RevealedCard } from "@/lib/types";
 
 type Phase = "picking" | "result";
@@ -79,9 +78,9 @@ export default function Board({
       <div className="h-full flex flex-col">
         {/* Header */}
         <div className="flex-none flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: "var(--card-border)" }}>
-          <Link href="/" className="text-sm font-medium" style={{ color: "var(--primary)" }}>
+          <a href="/" className="text-sm font-medium" style={{ color: "var(--primary)" }}>
             ✦ Nova tiragem
-          </Link>
+          </a>
           <span className="font-serif text-lg font-bold" style={{ color: "var(--text)" }}>
             Resultado
           </span>
@@ -153,7 +152,7 @@ export default function Board({
             >
               Enviar Resultado
             </button>
-            <Link
+            <a
               href="/"
               className="press-scale px-6 py-2.5 rounded-full font-medium text-sm tracking-wide transition-all hover:scale-105"
               style={{
@@ -163,7 +162,7 @@ export default function Board({
               }}
             >
               Nova Tiragem
-            </Link>
+            </a>
           </div>
         </div>
       </div>
@@ -174,9 +173,9 @@ export default function Board({
     <div className="h-full flex flex-col">
       {/* Header */}
       <div className="flex-none flex items-center justify-between px-3 py-2 border-b" style={{ borderColor: "var(--card-border)" }}>
-        <Link href="/" className="text-xs font-medium" style={{ color: "var(--primary)" }}>
+        <a href="/" className="text-xs font-medium" style={{ color: "var(--primary)" }}>
           ✦ Voltar
-        </Link>
+        </a>
         <span className="font-serif text-base font-bold" style={{ color: "var(--text)" }}>
           Escolha suas cartas
         </span>
