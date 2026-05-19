@@ -228,8 +228,11 @@ export default function Board({
         ))}
       </div>
 
-      <div className="flex-1 min-h-0 px-1.5 py-1">
-        <div className="h-full grid grid-cols-6 grid-rows-[repeat(13,1fr)] sm:grid-cols-8 sm:grid-rows-[repeat(10,1fr)] md:grid-cols-10 md:grid-rows-[repeat(8,1fr)] lg:grid-cols-13 lg:grid-rows-[repeat(6,1fr)] gap-[3px]">
+      <div className="flex-1 min-h-0">
+        <div
+          className="h-full grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-13 gap-px"
+          style={{ gridAutoRows: '1fr' }}
+        >
           {Array.from({ length: 78 }, (_, i) => {
             const revealed = revealedMap.get(i);
             const isFlipped = flipped.has(i);
