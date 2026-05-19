@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { toPng } from "html-to-image";
 import type { ReadingPublic, RevealedCard } from "@/lib/types";
 
 type Phase = "picking" | "result";
@@ -20,8 +19,6 @@ export default function Board({
   const [phase, setPhase] = useState<Phase>(
     initial.revealed.length >= initial.num_cartas ? "result" : "picking",
   );
-  const [exporting, setExporting] = useState(false);
-  const exportRef = useRef<HTMLDivElement>(null);
 
   const ALLOWED_ORIGINS = [
     "https://app.megumitarot.com.br",
@@ -77,23 +74,6 @@ export default function Board({
     }
   }
 
-  async function handleExportImage() {
-    if (!exportRef.current) return;
-    setExporting(true);
-    try {
-      const dataUrl = await toPng(exportRef.current, {
-        pixelRatio: 2,
-        backgroundColor: "#FDF6F0",
-      });
-      const link = document.createElement("a");
-      link.download = `megumi-tarot-${reading.id.slice(0, 8)}.png`;
-      link.href = dataUrl;
-      link.click();
-    } finally {
-      setExporting(false);
-    }
-  }
-
   if (phase === "result") {
     return (
       <div className="h-full flex flex-col">
@@ -113,7 +93,6 @@ export default function Board({
         {/* Result content */}
         <div className="flex-1 flex flex-col items-center justify-center gap-5 px-4 py-4 min-h-0">
           <div
-            ref={exportRef}
             className="flex flex-col items-center gap-4 p-5 rounded-2xl w-full max-w-md"
             style={{ background: "white", border: "1px solid var(--card-border)" }}
           >
@@ -153,7 +132,6 @@ export default function Board({
                   >
                     {r.card.nome}
                   </span>
-
                 </div>
               ))}
             </div>
@@ -163,7 +141,7 @@ export default function Board({
             </p>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex gap-3">
             <button
               onClick={() => {
                 const text = reading.revealed
@@ -174,18 +152,6 @@ export default function Board({
               className="btn-primary press-scale px-8 py-2.5 rounded-full cursor-pointer font-medium text-sm tracking-wide transition-all hover:scale-105"
             >
               Enviar Resultado
-            </button>
-            <button
-              onClick={handleExportImage}
-              disabled={exporting}
-              className="press-scale px-6 py-2.5 rounded-full cursor-pointer font-medium text-sm tracking-wide transition-all hover:scale-105 disabled:opacity-50"
-              style={{
-                color: "var(--primary)",
-                border: "1.5px solid var(--card-border)",
-                background: "white",
-              }}
-            >
-              {exporting ? "Gerando…" : "Gerar Imagem"}
             </button>
             <Link
               href="/"
@@ -293,15 +259,12 @@ export default function Board({
                     }}
                   >
                     {revealed && (
-                      <>
-                        <span
-                          className="text-[8px] sm:text-[9px] font-serif font-bold text-center leading-tight"
-                          style={{ color: "var(--text)" }}
-                        >
-                          {revealed.card.nome_pt}
-                        </span>
-
-                      </>
+                      <span
+                        className="text-[8px] sm:text-[9px] font-serif font-bold text-center leading-tight"
+                        style={{ color: "var(--text)" }}
+                      >
+                        {revealed.card.nome_pt}
+                      </span>
                     )}
                   </div>
                 </div>
