@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 const ALLOWED_ORIGINS = [
   "https://app.megumitarot.com.br",
   "https://preview--creative-sales-aid.lovable.app",
+  "https://megumi-tarot.vercel.app",
 ];
 
 export function middleware(request: NextRequest) {

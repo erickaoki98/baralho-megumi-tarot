@@ -41,6 +41,7 @@ export default function Board({
   const ALLOWED_ORIGINS = [
     "https://app.megumitarot.com.br",
     "https://preview--creative-sales-aid.lovable.app",
+    "https://megumi-tarot.vercel.app",
   ];
 
   function postToParent(text: string) {
