@@ -11,7 +11,7 @@ export default function Board({
   reading: ReadingPublic;
 }) {
   const [reading, setReading] = useState(initial);
-  const [loading, setLoading] = useState<number | null>(null);
+  const [loading, setLoading] = useState<Set<number>>(() => new Set());
   const [flipped, setFlipped] = useState<Set<number>>(
     () => new Set(initial.revealed.map((r) => r.position)),
   );
@@ -41,10 +41,12 @@ export default function Board({
   const revealedMap = new Map(reading.revealed.map((r) => [r.position, r]));
   const allRevealed = reading.revealed.length >= reading.num_cartas;
 
-  async function handleReveal(position: number) {
-    if (revealedMap.has(position) || loading !== null || allRevealed) return;
+  const revealedCount = reading.revealed.length;
 
-    setLoading(position);
+  async function handleReveal(position: number) {
+    if (revealedMap.has(position) || loading.has(position) || allRevealed) return;
+
+    setLoading((prev) => new Set(prev).add(position));
     try {
       const res = await fetch(`/api/v1/readings/${reading.id}/reveal`, {
         method: "POST",
@@ -54,22 +56,24 @@ export default function Board({
       if (!res.ok) return;
       const revealed: RevealedCard = await res.json();
       setFlipped((prev) => new Set(prev).add(position));
-      setReading((prev) => ({
-        ...prev,
-        status: "em_andamento",
-        revealed: [...prev.revealed, revealed],
-      }));
-
-      if (reading.revealed.length + 1 >= reading.num_cartas) {
-        setTimeout(async () => {
-          await fetch(`/api/v1/readings/${reading.id}/finalize`, {
-            method: "POST",
-          });
-          setPhase("result");
-        }, 700);
-      }
+      setReading((prev) => {
+        const updated = {
+          ...prev,
+          status: "em_andamento" as const,
+          revealed: [...prev.revealed, revealed],
+        };
+        if (updated.revealed.length >= prev.num_cartas) {
+          fetch(`/api/v1/readings/${prev.id}/finalize`, { method: "POST" });
+          setTimeout(() => setPhase("result"), 600);
+        }
+        return updated;
+      });
     } finally {
-      setLoading(null);
+      setLoading((prev) => {
+        const next = new Set(prev);
+        next.delete(position);
+        return next;
+      });
     }
   }
 
@@ -209,8 +213,8 @@ export default function Board({
           {Array.from({ length: 78 }, (_, i) => {
             const revealed = revealedMap.get(i);
             const isFlipped = flipped.has(i);
-            const isLoading = loading === i;
-            const isDisabled = !!revealed || loading !== null || allRevealed;
+            const isLoading = loading.has(i);
+            const isDisabled = !!revealed || isLoading || allRevealed;
 
             return (
               <button
